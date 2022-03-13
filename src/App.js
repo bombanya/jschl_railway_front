@@ -1,6 +1,6 @@
 import React from "react";
 import {AppContext} from "./context";
-import RunSearchPage from "./pages/RunSearchPage";
+import AdminPage from "./pages/AdminPage";
 
 function App() {
 
@@ -11,7 +11,7 @@ function App() {
             serverUrl
         }}>
             <div className="App">
-                <RunSearchPage/>
+                <AdminPage />
             </div>
         </AppContext.Provider>
     );
