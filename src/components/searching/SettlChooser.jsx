@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {AutoComplete} from "primereact/autocomplete";
-import {AppContext} from "../context";
+import {AppContext} from "../../context";
 
 const SettlChooser = ({selectedSettl, setSelectedSettl, placeholder, invalid, setInvalid}) => {
     const {serverUrl} = useContext(AppContext);

@@ -1,9 +1,9 @@
 import React, {useContext, useState} from 'react';
-import SettlChooser from "../components/SettlChooser";
+import SettlChooser from "../components/searching/SettlChooser";
 import {Button} from "primereact/button";
 import {Calendar} from "primereact/calendar";
 import {AppContext} from "../context";
-import RunsList from "../components/RunsList";
+import RunsList from "../components/searching/RunsList";
 
 const RunSearchPage = () => {
 
