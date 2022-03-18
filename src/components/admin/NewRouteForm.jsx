@@ -1,15 +1,19 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button} from "primereact/button";
 import {Toolbar} from "primereact/toolbar";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import StationChooser from "../searching/StationChooser";
 import {InputNumber} from "primereact/inputnumber";
+import {AppContext} from "../../context";
 
-const NewRouteForm = () => {
+const NewRouteForm = ({fetchRoute}) => {
 
-    const [rootStations, setRootStations] = useState([]);
+    const {serverUrl} = useContext(AppContext);
+    const [routeStations, setRouteStations] = useState([]);
     let [serialNumber, setSerialNumber] = useState(0);
+    const [invalid, setInvalid] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const incrementSerial = () => {
         const res = serialNumber;
@@ -21,8 +25,57 @@ const NewRouteForm = () => {
         setSerialNumber(serialNumber - 1);
     }
 
-    console.log(serialNumber);
+    const createNewRoute = () => {
+        setInvalid(false);
+        if (routeStations.length < 2) {
+            setInvalid(true);
+            setErrorMessage("The route must consist of at least two stations");
+            return;
+        }
+        let flag = true;
+        routeStations.forEach(station => {
+            if (station.station == null){
+                const updatedRootStations = [...routeStations];
+                updatedRootStations[station.serialNumberOnTheRoute].invalid = true;
+                setRouteStations(updatedRootStations);
+                flag = false;
+            }
+        });
+        if (flag) {
+            fetch(`${serverUrl}/api/routes/route/new`, {
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const stationsForRequest = [];
+                    routeStations.forEach(station => {
+                        stationsForRequest.push({
+                            "route": {
+                                "id": data.serviceResult.id
+                            },
+                            "station": {
+                                "id": station.station.id
+                            },
+                            "serialNumberOnTheRoute": station.serialNumberOnTheRoute,
+                            "stagePrice": station.stagePrice,
+                            "stageDistance": station.stageDistance,
+                            "stageDeparture": station.stageDeparture,
+                            "stageArrival": station.stageArrival
+                        });
+                    });
+                    fetch(`${serverUrl}/api/routes/routestation/new/list`, {
+                        method: "POST",
+                        body: JSON.stringify(stationsForRequest),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(fetchRoute(data.serviceResult.id));
+                });
+        }
+    }
 
+    
     const leftToolbarTemplate = () => {
       return (
           <React.Fragment>
@@ -30,7 +83,8 @@ const NewRouteForm = () => {
                       icon="pi pi-plus"
                       className="p-button-success mr-2"
                       onClick={() => {
-                          setRootStations([...rootStations,
+                          setInvalid(false);
+                          setRouteStations([...routeStations,
                               {
                                   "station": null,
                                   "serialNumberOnTheRoute": incrementSerial(),
@@ -46,16 +100,34 @@ const NewRouteForm = () => {
                       icon="pi pi-trash"
                       className="p-button-danger mr-2"
                       onClick={() => {
-                          if (rootStations.length > 0){
-                              const updatedRootStations = [...rootStations];
+                          if (routeStations.length > 0){
+                              const updatedRootStations = [...routeStations];
                               updatedRootStations.pop();
-                              setRootStations(updatedRootStations);
+                              setRouteStations(updatedRootStations);
                               decrementSerial();
                           }
                       }}
               />
-              <Button label="Test" onClick={() => console.log(rootStations)}
-              />
+          </React.Fragment>
+      )
+    }
+
+    const rightToolbarTemplate = () => {
+      return (
+          <React.Fragment>
+              <div>
+                  <div>
+                      <Button label="Create new route"
+                              icon="pi pi-check"
+                              className={invalid ? "p-button-success mr-2 p-invalid" : "p-button-success mr-2"}
+                              onClick={createNewRoute}
+                      />
+                  </div>
+                  <div>
+                      {invalid && <small className="p-error">{errorMessage}</small>}
+                  </div>
+              </div>
+
           </React.Fragment>
       )
     }
@@ -64,16 +136,16 @@ const NewRouteForm = () => {
         return (
             <StationChooser selectedStation={data.station}
                             setSelectedStation={station => {
-                                const updatedRootStations = [...rootStations];
+                                const updatedRootStations = [...routeStations];
                                 updatedRootStations[data.serialNumberOnTheRoute].station = station;
-                                setRootStations(updatedRootStations);
+                                setRouteStations(updatedRootStations);
                             }}
                             invalid={data.invalid}
                             placeholder="Station"
                             setInvalid={invalid => {
-                                const updatedRootStations = [...rootStations];
+                                const updatedRootStations = [...routeStations];
                                 updatedRootStations[data.serialNumberOnTheRoute].invalid = invalid;
-                                setRootStations(updatedRootStations);
+                                setRouteStations(updatedRootStations);
                             }}
             />
         )
@@ -83,19 +155,22 @@ const NewRouteForm = () => {
         return <InputNumber min={0}
                             value={options.rowData[options.field]}
                             onValueChange={e => {
-                                const updatedRootStations = [...rootStations];
+                                const updatedRootStations = [...routeStations];
                                 updatedRootStations[options.rowData.serialNumberOnTheRoute][options.field]
                                     = e.value;
-                                setRootStations(updatedRootStations);
+                                setRouteStations(updatedRootStations);
                             }}
         />
     }
 
     return (
         <div className="card">
-            <Toolbar className="mb-4" left={leftToolbarTemplate}/>
+            <Toolbar className="mb-4"
+                     left={leftToolbarTemplate}
+                     right={rightToolbarTemplate}
+            />
 
-            <DataTable value={rootStations}
+            <DataTable value={routeStations}
                        responsiveLayout="scroll"
                        dataKey="serialNumberOnTheRoute"
                        editMode="cell"
@@ -105,8 +180,8 @@ const NewRouteForm = () => {
                 <Column field="station" header="Station" body={createStationChooser}/>
                 <Column field="stagePrice" header="Stage price" editor={options => numbersEditor(options)} />
                 <Column field="stageDistance" header="Stage distance" editor={options => numbersEditor(options)} />
-                <Column field="stageDeparture" header="Stage departure" editor={options => numbersEditor(options)} />
                 <Column field="stageArrival" header="Stage arrival" editor={options => numbersEditor(options)} />
+                <Column field="stageDeparture" header="Stage departure" editor={options => numbersEditor(options)} />
 
             </DataTable>
         </div>
