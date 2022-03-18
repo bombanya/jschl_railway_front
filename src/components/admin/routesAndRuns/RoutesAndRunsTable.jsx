@@ -4,13 +4,16 @@ import {Column} from "primereact/column";
 import RouteStationsTable from "./RouteStationsTable";
 import {Button} from "primereact/button";
 import {OverlayPanel} from "primereact/overlaypanel";
-import RunsTable from "./RunsTable";
+import RouteRunsTable from "./RouteRunsTable";
+import DialogForNewRun from "./DialogForNewRun";
 
-const RoutesAndRunsTable = ({routes, stations, runs}) => {
+const RoutesAndRunsTable = ({routes, stations, runs, trains, wagonTypes, setRuns}) => {
 
     const [expandedRows, setExpandedRows] = useState(null);
     const [selectedRoute, setSelectedRoute] = useState(null);
+    const [displayRunDialog, setDisplayRunDialog] = useState(false);
     const op = useRef(null);
+
 
     const stationByRouteStation = (routeStation) => {
         return stations.find((station) => station.id === routeStation.id.stationId);
@@ -47,6 +50,19 @@ const RoutesAndRunsTable = ({routes, stations, runs}) => {
       )
     }
 
+    const getNewRunDialogButton = (data) => {
+        return (
+            <Button label="New run"
+                    onClick={() => {
+                        setSelectedRoute(data);
+                        setDisplayRunDialog(true);
+                    }}
+                    icon="pi pi-plus"
+                    className="p-button-success"
+            />
+        )
+    }
+
     const getRouteRuns = (route) => {
         return runs.filter(run => run.route.id === route.id);
     }
@@ -57,24 +73,33 @@ const RoutesAndRunsTable = ({routes, stations, runs}) => {
                        expandedRows={expandedRows}
                        onRowToggle={e => setExpandedRows(e.data)}
                        responsiveLayout="scroll"
-                       rowExpansionTemplate={data => RunsTable({runs: getRouteRuns(data)})}
+                       rowExpansionTemplate={data => RouteRunsTable({runs: getRouteRuns(data)})}
                        dataKey="id"
             >
                 <Column expander style={{ width: '3em' }}/>
                 <Column field="id" header="Route id" />
-                <Column field="train.id" header="Train"/>
                 <Column field="routeStations" header="Start station" body={data => getStartStationName(data)}/>
                 <Column field="routeStations" header="Finish station" body={data => getFinishStationName(data)}/>
                 <Column body={data => getRouteStationsButton(data)} />
+                <Column body={data => getNewRunDialogButton(data)}/>
             </DataTable>
 
-            <OverlayPanel ref={op} id="overlay_panel">
+            <OverlayPanel ref={op}
+                          id="overlay_panel">
                 <div>
                     <RouteStationsTable stations={stations}
                                         route={selectedRoute}
                     />
                 </div>
             </OverlayPanel>
+
+            <DialogForNewRun wagonTypes={wagonTypes}
+                             trains={trains}
+                             route={selectedRoute}
+                             display={displayRunDialog}
+                             setDisplay={setDisplayRunDialog}
+                             updateRuns={(newRun) => setRuns([...runs, newRun])}
+            />
         </div>
     );
 };
