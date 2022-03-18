@@ -30,7 +30,7 @@ const StationChooser = ({selectedStation, setSelectedStation, placeholder, inval
                 <div>
                     {item.name}
                 </div>
-                <small className="ml-2">
+                <small>
                     {item.settlement.name} <br/>
                     {item.settlement.region.name}, {item.settlement.region.country.name}
                 </small>
@@ -38,11 +38,9 @@ const StationChooser = ({selectedStation, setSelectedStation, placeholder, inval
     }
 
     const blur = () => {
-        if (selectedStation == null){
-            if (stations.length !== 0) {
-                setSelectedStation(filteredStations[0]);
-                setStationName(filteredStations[0].name);
-            }
+        if (selectedStation == null && stations.length !== 0){
+            setSelectedStation(filteredStations[0]);
+            setStationName(filteredStations[0].name);
         }
     }
 
