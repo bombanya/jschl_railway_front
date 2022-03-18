@@ -1,7 +1,9 @@
  import React, {useContext, useEffect, useState} from 'react';
 import {AppContext} from "../context";
-import RoutesAndRunsTable from "../components/admin/RoutesAndRunsTable";
+import RoutesAndRunsTable from "../components/admin/routesAndRuns/RoutesAndRunsTable";
 import NewRouteForm from "../components/admin/NewRouteForm";
+ import TrainsTable from "../components/admin/trains/TrainsTable";
+ import SeatsTable from "../components/admin/trains/SeatsTable";
 
 const AdminPage = () => {
 
@@ -10,6 +12,15 @@ const AdminPage = () => {
     const [routes, setRoutes] = useState([]);
     const [stations, setStations] = useState([]);
     const [runs, setRuns] = useState([]);
+    const [trains, setTrains] = useState([]);
+    const [wagonTypes, setWagonTypes] = useState([]);
+    const [seats, setSeats] = useState([]);
+
+    const fetchRoute = (id) => {
+        fetch(`${serverUrl}/api/routes/route/${id}`)
+            .then(response => response.json())
+            .then(data => setRoutes([...routes, data.serviceResult]));
+    }
 
     useEffect(() => {
         fetch(`${serverUrl}/api/geography/station/all`)
@@ -20,7 +31,16 @@ const AdminPage = () => {
             .then(data => setRuns(data.serviceResult))
             .then(() => fetch(`${serverUrl}/api/routes/route/all`))
             .then(response => response.json())
-            .then(data => setRoutes(data.serviceResult));
+            .then(data => setRoutes(data.serviceResult))
+            .then(() => fetch(`${serverUrl}/api/trains/train/all`))
+            .then(response => response.json())
+            .then(data => setTrains(data.serviceResult))
+            .then(() => fetch(`${serverUrl}/api/trains/wagontype/all`))
+            .then(response => response.json())
+            .then(data => setWagonTypes(data.serviceResult))
+            .then(() => fetch(`${serverUrl}/api/trains/seat/all`))
+            .then(response => response.json())
+            .then(data => setSeats(data.serviceResult))
     }, []);
 
     return (
@@ -28,9 +48,18 @@ const AdminPage = () => {
             <RoutesAndRunsTable routes={routes}
                                 stations={stations}
                                 runs={runs}
+                                trains={trains}
+                                wagonTypes={wagonTypes}
+                                setRuns={setRuns}
             />
 
-            <NewRouteForm />
+            <NewRouteForm fetchRoute={fetchRoute}
+            />
+
+            <TrainsTable trains={trains}
+            />
+
+            <SeatsTable seats={seats} />
         </div>
     );
 };
