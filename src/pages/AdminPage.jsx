@@ -4,6 +4,8 @@ import RoutesAndRunsTable from "../components/admin/routesAndRuns/RoutesAndRunsT
 import NewRouteForm from "../components/admin/NewRouteForm";
  import TrainsTable from "../components/admin/trains/TrainsTable";
  import SeatsTable from "../components/admin/trains/SeatsTable";
+ import {Accordion, AccordionTab} from "primereact/accordion";
+ import {Card} from "primereact/card";
 
 const AdminPage = () => {
 
@@ -45,21 +47,32 @@ const AdminPage = () => {
 
     return (
         <div className="card">
-            <RoutesAndRunsTable routes={routes}
-                                stations={stations}
-                                runs={runs}
-                                trains={trains}
-                                wagonTypes={wagonTypes}
-                                setRuns={setRuns}
-            />
+            <Accordion multiple>
+                <AccordionTab header="Routes and runs">
+                    <Card className="mb-3" title="Routes and runs table">
+                        <RoutesAndRunsTable routes={routes}
+                                            stations={stations}
+                                            runs={runs}
+                                            trains={trains}
+                                            wagonTypes={wagonTypes}
+                                            setRuns={setRuns}
+                        />
+                    </Card>
 
-            <NewRouteForm fetchRoute={fetchRoute}
-            />
+                    <Card className="mb-3" title="Register new route">
+                        <NewRouteForm fetchRoute={fetchRoute}/>
+                    </Card>
+                </AccordionTab>
 
-            <TrainsTable trains={trains}
-            />
-
-            <SeatsTable seats={seats} />
+                <AccordionTab header="Trains">
+                    <Card className="mb-3" title="Trains and train schedule">
+                        <TrainsTable trains={trains}/>
+                    </Card>
+                    <Card className="mb-3" title="Cars types and seats table">
+                        <SeatsTable seats={seats} />
+                    </Card>
+                </AccordionTab>
+            </Accordion>
         </div>
     );
 };

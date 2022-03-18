@@ -1,6 +1,8 @@
 import React from "react";
 import {AppContext} from "./context";
 import AdminPage from "./pages/AdminPage";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import RunSearchPage from "./pages/RunSearchPage";
 
 function App() {
 
@@ -10,9 +12,12 @@ function App() {
         <AppContext.Provider value={{
             serverUrl
         }}>
-            <div className="App">
-                <AdminPage />
-            </div>
+            <BrowserRouter>
+                <Routes>
+                    <Route exact path="/admin" element={<AdminPage/>}/>
+                    <Route exact path="/" element={<RunSearchPage />}/>
+                </Routes>
+            </BrowserRouter>
         </AppContext.Provider>
     );
 }
