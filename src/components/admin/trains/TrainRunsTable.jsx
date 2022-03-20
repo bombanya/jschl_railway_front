@@ -10,6 +10,7 @@ const TrainRunsTable = ({runs}) => {
                        responsiveLayout="scroll"
             >
                 <Column field="runId" header="Run Id"/>
+                <Column field="routeId" header="Route Id"/>
                 <Column field="startStation.name" header="Start station"/>
                 <Column field="finishStation.name" header="Finish station"/>
                 <Column field="startTime" header="Start time (UTC)"

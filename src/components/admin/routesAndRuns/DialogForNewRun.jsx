@@ -36,7 +36,8 @@ const DialogForNewRun = ({route, display, setDisplay, trains, wagonTypes, update
         if (selectedTrain != null && startTime != null && startDate != null){
             setFormDisabled(true);
             const date = startDate.getFullYear() + "-" + ((startDate.getMonth() + 1) < 10 ? "0" : "") +
-                (startDate.getMonth() + 1) + "-" + startDate.getDate() + "T" +
+                (startDate.getMonth() + 1) + "-" + (startDate.getDate() < 10 ? "0" : "") +
+                startDate.getDate() + "T" +
                 (startTime.getHours() < 10 ? "0" : "") + startTime.getHours() + ":" +
                 (startTime.getMinutes() < 10 ? "0" : "") + startTime.getMinutes() + ":00Z";
             fetch(`${serverUrl}/api/routes/run/new/${route.id}/${selectedTrain.id}/${date}`, {
