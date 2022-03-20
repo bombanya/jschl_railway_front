@@ -73,7 +73,7 @@ const RoutesAndRunsTable = ({routes, stations, runs, trains, wagonTypes, setRuns
                        expandedRows={expandedRows}
                        onRowToggle={e => setExpandedRows(e.data)}
                        responsiveLayout="scroll"
-                       rowExpansionTemplate={data => RouteRunsTable({runs: getRouteRuns(data)})}
+                       rowExpansionTemplate={data => <RouteRunsTable runs={getRouteRuns(data)}/>}
                        dataKey="id"
             >
                 <Column expander style={{ width: '3em' }}/>
