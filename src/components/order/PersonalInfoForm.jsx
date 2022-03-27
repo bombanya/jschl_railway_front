@@ -39,7 +39,7 @@ const PersonalInfoForm = ({person, setPerson, personalInfoConfirmed,
                 (person.birthDate.getMonth() + 1) + "-" + (person.birthDate.getDate() < 10 ? "0" : "") +
                 person.birthDate.getDate()
             setLoading(true);
-            fetch(`${serverUrl}/api/passenger/code`, {
+            fetch(`${serverUrl}/public/passenger/code`, {
                 method: "POST",
                 body: JSON.stringify({
                     name: person.name,

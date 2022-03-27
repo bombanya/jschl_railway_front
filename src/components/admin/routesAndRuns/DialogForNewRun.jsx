@@ -16,7 +16,7 @@ const DialogForNewRun = ({route, display, setDisplay, trains, wagonTypes, update
     const [startTime, setStartTime] = useState(null);
     const [dateInvalid, setDateInvalid] = useState(false);
     const [timeInvalid, setTimeInvalid] = useState(false);
-    const {serverUrl} = useContext(AppContext);
+    const {serverUrl, token} = useContext(AppContext);
     const [formDisabled,setFormDisabled] = useState(false);
 
     useEffect(() => {
@@ -41,7 +41,8 @@ const DialogForNewRun = ({route, display, setDisplay, trains, wagonTypes, update
                 (startTime.getHours() < 10 ? "0" : "") + startTime.getHours() + ":" +
                 (startTime.getMinutes() < 10 ? "0" : "") + startTime.getMinutes() + ":00Z";
             fetch(`${serverUrl}/api/routes/run/new/${route.id}/${selectedTrain.id}/${date}`, {
-                method: "POST"
+                method: "POST",
+                headers: {"Authorization": token}
             })
                 .then(response => response.json())
                 .then(data => {

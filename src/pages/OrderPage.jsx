@@ -36,7 +36,7 @@ const OrderPage = () => {
             navigate("/");
         }
         else {
-            fetch(serverUrl + "/api/tickets/available/" + runForOrder.runId + "/" +
+            fetch(serverUrl + "/public/tickets/available/" + runForOrder.runId + "/" +
                 runForOrder.startStation.id + "/" + runForOrder.finishStation.id)
                 .then(response => response.json())
                 .then(data => {

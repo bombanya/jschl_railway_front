@@ -8,10 +8,10 @@ const RunTicketsTable = ({run}) => {
 
     const [tickets, setTickets] = useState([]);
     const [loading, setLoading] = useState(true);
-    const {serverUrl} = useContext(AppContext);
+    const {serverUrl, token} = useContext(AppContext);
 
     useEffect(() => {
-        fetch(`${serverUrl}/api/tickets/all/${run.id}`)
+        fetch(`${serverUrl}/api/tickets/all/${run.id}`, {headers: {"Authorization": token}})
             .then(response => response.json())
             .then(data => {
                 setTickets(data.serviceResult);

@@ -3,13 +3,13 @@ import {Button} from "primereact/button";
 import {Toolbar} from "primereact/toolbar";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
-import StationChooser from "../searching/StationChooser";
+import StationChooser from "../../searching/StationChooser";
 import {InputNumber} from "primereact/inputnumber";
-import {AppContext} from "../../context";
+import {AppContext} from "../../../context";
 
 const NewRouteForm = ({fetchRoute}) => {
 
-    const {serverUrl} = useContext(AppContext);
+    const {serverUrl, token} = useContext(AppContext);
     const [routeStations, setRouteStations] = useState([]);
     let [serialNumber, setSerialNumber] = useState(0);
     const [invalid, setInvalid] = useState(false);
@@ -43,7 +43,8 @@ const NewRouteForm = ({fetchRoute}) => {
         });
         if (flag) {
             fetch(`${serverUrl}/api/routes/route/new`, {
-                method: 'POST'
+                method: 'POST',
+                headers: {"Authorization": token}
             })
                 .then(response => response.json())
                 .then(data => {
@@ -67,10 +68,15 @@ const NewRouteForm = ({fetchRoute}) => {
                         method: "POST",
                         body: JSON.stringify(stationsForRequest),
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            "Authorization": token
                         }
                     })
-                        .then(fetchRoute(data.serviceResult.id));
+                        .then(() => {
+                            fetchRoute(data.serviceResult.id);
+                            setRouteStations([]);
+                            setSerialNumber(0);
+                        });
                 });
         }
     }

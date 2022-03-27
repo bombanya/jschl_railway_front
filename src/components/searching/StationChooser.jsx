@@ -3,13 +3,14 @@ import {AppContext} from "../../context";
 import {AutoComplete} from "primereact/autocomplete";
 
 const StationChooser = ({selectedStation, setSelectedStation, placeholder, invalid, setInvalid}) => {
-    const {serverUrl} = useContext(AppContext);
+    const {serverUrl, token} = useContext(AppContext);
     const [stations, setStations] = useState([]);
     const [filteredStations, setFilteredStations] = useState([]);
     const [stationName, setStationName] = useState('');
 
     const fetchStations = (name) => {
-        fetch(serverUrl + "/api/geography/station/all/name/settlname/" + name)
+        fetch(serverUrl + "/api/geography/station/all/name/settlname/" + name,
+            {headers: {"Authorization": token}})
             .then(response => response.json())
             .then(data => setStations(data.serviceResult));
     }

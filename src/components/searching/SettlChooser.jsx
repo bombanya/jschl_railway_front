@@ -9,7 +9,7 @@ const SettlChooser = ({selectedSettl, setSelectedSettl, placeholder, invalid, se
     const [settlName, setSettlName] = useState('');
 
     const fetchSettls = (name) => {
-        fetch(serverUrl + "/api/geography/settlement/all/" + name)
+        fetch(serverUrl + "/public/settlement/all/" + name)
             .then(response => response.json())
             .then(data => setSettlements(data.serviceResult));
     }

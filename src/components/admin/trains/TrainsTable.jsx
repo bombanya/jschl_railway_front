@@ -13,7 +13,7 @@ const TrainsTable = ({trains}) => {
     const [trainsRuns, setTrainsRuns] = useState([]);
     const [filteredRuns, setFilteredRuns] = useState([]);
     const op = useRef(null);
-    const {serverUrl} = useContext(AppContext);
+    const {serverUrl, token} = useContext(AppContext);
 
     useEffect(() => {
         const wagonsForTable = [];
@@ -39,7 +39,8 @@ const TrainsTable = ({trains}) => {
 
     const findTrainRuns = (data) => {
         if (trainsRuns.find(trainRuns => trainRuns.train === data.trainId) == null){
-            fetch(`${serverUrl}/api/routes/run/trainschedule/${data.trainId}`)
+            fetch(`${serverUrl}/api/routes/run/trainschedule/${data.trainId}`,
+                {headers: {"Authorization": token}})
                 .then(response => response.json())
                 .then(result => {
                     setTrainsRuns([...trainsRuns, {

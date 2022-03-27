@@ -28,7 +28,7 @@ const RunSearchPage = () => {
                 departureDate.getDate();
             setLoading(true);
             setEmptyResult(false);
-            fetch(`${serverUrl}/api/routes/run/search/check/${settlFrom.id}/${settlTo.id}/${date}`)
+            fetch(`${serverUrl}/public/run/search/check/${settlFrom.id}/${settlTo.id}/${date}`)
                 .then(response => response.json())
                 .then(data => {
                     setLoading(false);

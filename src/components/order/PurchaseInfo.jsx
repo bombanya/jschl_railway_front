@@ -18,7 +18,7 @@ const PurchaseInfo = ({personCode, selectedTickets}) => {
         else{
             const order = [];
             selectedTickets.forEach(ticket => order.push({...ticket, passenger: {id: personCode}}));
-            fetch(`${serverUrl}/api/tickets/buy`, {
+            fetch(`${serverUrl}/public/tickets/buy`, {
                 method: "POST",
                 body: JSON.stringify(order),
                 headers: {
