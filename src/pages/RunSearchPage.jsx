@@ -1,9 +1,9 @@
 import React, {useContext, useState} from 'react';
-import SettlChooser from "../components/SettlChooser";
+import SettlChooser from "../components/searching/SettlChooser";
 import {Button} from "primereact/button";
 import {Calendar} from "primereact/calendar";
 import {AppContext} from "../context";
-import RunsList from "../components/RunsList";
+import RunsList from "../components/searching/RunsList";
 
 const RunSearchPage = () => {
 
@@ -24,7 +24,8 @@ const RunSearchPage = () => {
         else if (departureDate == null) setDepartureDateInvalid(true);
         else{
             const date = departureDate.getFullYear() + "-" + (((departureDate.getMonth() + 1) < 10) ? "0" : "") +
-                (departureDate.getMonth() + 1) + "-" + departureDate.getDate();
+                (departureDate.getMonth() + 1) + "-" + (departureDate.getDate() < 10 ? "0" : "") +
+                departureDate.getDate();
             setLoading(true);
             setEmptyResult(false);
             fetch(`${serverUrl}/api/routes/run/search/check/${settlFrom.id}/${settlTo.id}/${date}`)

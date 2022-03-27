@@ -198,3 +198,27 @@ img.flag {
     width:30px
 }
 
+.p-datatable-thead .p-checkbox {
+    visibility: hidden;
+}
+
+.myform .card {
+    min-width: 450px;
+}
+.myform .card form {
+    margin-top: 2rem;
+}
+.myform .card .field {
+    margin-bottom: 1.5rem;
+}
+@media screen and (max-width: 960px) {
+    .myform .card {
+        width: 80%;
+    }
+}
+@media screen and (max-width: 640px) {
+    .myform .card {
+        width: 100%;
+        min-width: 0;
+    }
+}

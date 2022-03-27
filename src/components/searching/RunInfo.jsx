@@ -1,10 +1,15 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Card} from "primereact/card";
+import {Button} from "primereact/button";
+import {AppContext} from "../../context";
+import {useNavigate} from "react-router-dom";
 
-const RunInfo = ({run}) => {
+const RunInfo = ({run, withBuyButton}) => {
 
     const startStationTime = new Date(...(run.startStationTimeDeparture));
     const finishStationTime = new Date(...(run.finishStationTimeArrival));
+    const {setRunForOrder} = useContext(AppContext);
+    const navigate = useNavigate();
 
         return (
         <Card>
@@ -49,6 +54,24 @@ const RunInfo = ({run}) => {
                         {run.finishStation.settlement.region.country.name}
                     </div>
                 </div>
+
+                {withBuyButton &&
+                    <div className="col-12 grid">
+                        <h6 className="col-4">
+                            {`Available tickets: ${run.ticketsAvailable}`}
+                        </h6>
+                        <div className="col-3 col-offset-5 flex justify-content-end align-items-center">
+                            <Button label="Buy tickets" onClick={() => {
+                                setRunForOrder(run);
+                                navigate("/order");
+                            }
+                            }
+                            />
+                        </div>
+                    </div>
+                }
+
+
             </div>
         </Card>
     );

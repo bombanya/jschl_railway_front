@@ -12,7 +12,7 @@ const RunsList = ({runs, loading, emptyList}) => {
 
             {runs.map(run =>
                 <div key={run.runId} className="col-12">
-                    <RunInfo run={run}
+                    <RunInfo run={run} withBuyButton={true}
                     />
                 </div>)
             }
