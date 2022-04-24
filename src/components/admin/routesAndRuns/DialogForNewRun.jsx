@@ -51,6 +51,7 @@ const DialogForNewRun = ({route, display, setDisplay, trains, wagonTypes, update
                     setDisplay(false);
                     setStartTime(null);
                     setStartDate(null);
+                    setFormDisabled(false);
                 });
         }
     }
@@ -134,7 +135,7 @@ const DialogForNewRun = ({route, display, setDisplay, trains, wagonTypes, update
                                       setStartDate(e.value);
                                   }}
                                   dateFormat="dd.mm.yy"
-                                  minDate={new Date(new Date().setDate(new Date().getDate() + 1))}
+                                  minDate={new Date(new Date().setDate(new Date().getDate()))}
                                   placeholder="Select date"
                                   inputClassName={dateInvalid ? "p-invalid" : ""}
                         />

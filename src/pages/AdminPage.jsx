@@ -7,10 +7,11 @@ import NewRouteForm from "../components/admin/routesAndRuns/NewRouteForm";
  import {Accordion, AccordionTab} from "primereact/accordion";
  import {Card} from "primereact/card";
  import {useNavigate} from "react-router-dom";
+ import {Button} from "primereact/button";
 
 const AdminPage = () => {
 
-    const {serverUrl} = useContext(AppContext);
+    const {serverUrl, username, setUsername, setToken} = useContext(AppContext);
 
     const [routes, setRoutes] = useState([]);
     const [stations, setStations] = useState([]);
@@ -22,7 +23,7 @@ const AdminPage = () => {
     const navigate = useNavigate();
 
     const fetchRoute = (id) => {
-        fetch(`${serverUrl}/api/routes/route/${id}`)
+        fetch(`${serverUrl}/api/routes/route/${id}`, {headers: {"Authorization": token}})
             .then(response => response.json())
             .then(data => setRoutes([...routes, data.serviceResult]));
     }
@@ -33,7 +34,7 @@ const AdminPage = () => {
             navigate("/login")
         }
         else {
-            fetch(`${serverUrl}/api/geography/station/all`, {headers: {"Authorization": token}})
+            fetch(`${serverUrl}/api/geography/public/station/all`, {headers: {"Authorization": token}})
                 .then(response => response.json())
                 .then(data => setStations(data.serviceResult))
                 .then(() => fetch(`${serverUrl}/api/routes/run/all`, {headers: {"Authorization": token}}))
@@ -56,6 +57,16 @@ const AdminPage = () => {
 
     return (
         <div className="card">
+            <div className="p-menubar flex justify-content-between mb-4">
+                <h5 className="mb-0 mt-0">{username}</h5>
+                <Button label="Sign out"
+                        onClick={() => {
+                            setUsername("");
+                            setToken(null);
+                            navigate("/login");
+                        }}
+                />
+            </div>
             <Accordion multiple>
                 <AccordionTab header="Routes and runs">
                     <Card className="mb-3" title="Routes and runs table">
